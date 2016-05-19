@@ -29,4 +29,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
     compile files('libs/volley.jar')
+    compile files('libs/fastjson-1.2.11.jar')
+    compile files('libs/fastjson-1.2.11-javadoc.jar')
+    compile files('libs/fastjson-1.2.11-sources.jar')
 }

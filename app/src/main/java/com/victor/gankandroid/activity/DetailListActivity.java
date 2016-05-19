@@ -1,19 +1,19 @@
 package com.victor.gankandroid.activity;
 
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.victor.gankandroid.Model.DetailData;
+import com.victor.gankandroid.Model.JsonDetailDataList;
 import com.victor.gankandroid.R;
 import com.victor.gankandroid.adapter.DetailListAdapter;
 import com.victor.gankandroid.application.ApplicationController;
@@ -24,16 +24,12 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class DetailListActivity extends AppCompatActivity {
 
     private static final String TAG = "DetailListActivity";
 
     private int currentPage = 1;
     private String pageSize = "10";
-    private JsonObjectRequest request;
     private List<DetailData> mLists;
 
     private DetailListAdapter mAdapter;
@@ -58,15 +54,21 @@ public class DetailListActivity extends AppCompatActivity {
         mSrl.setOnRefreshListener(this);*/
         mAdapter = new DetailListAdapter(this);
         mRv.setLayoutManager(new LinearLayoutManager(this));
+        mRv.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                super.onDraw(c, parent, state);
+            }
+        });
         mRv.setAdapter(mAdapter);
         getAllData();
 
     }
 
 
-    private void getAllData(){
+    private void getAllData() {
 //        mSrl.setRefreshing(true);
-        request = new JsonObjectRequest(RequestPath.ANDROID + RequestPath.SPLIT + pageSize + RequestPath.SPLIT + currentPage,
+        JsonObjectRequest request = new JsonObjectRequest(RequestPath.ANDROID + RequestPath.SPLIT + pageSize + RequestPath.SPLIT + currentPage,
                 null,
                 new Response.Listener<JSONObject>() {
 
@@ -75,12 +77,16 @@ public class DetailListActivity extends AppCompatActivity {
 
 //                        mSrl.setRefreshing(false);
                         if (null == jsonObject) return;
-                        try {
+                        String json2Str = jsonObject.toString();
+                        JsonDetailDataList detailDataList = JSON.parseObject(json2Str, JsonDetailDataList.class);
+                        mLists = detailDataList.getResults();
+                        mAdapter.addMoreData(mLists);
+                        /*try {
                             mLists = DetailData.initResponse(jsonObject);
                             mAdapter.addMoreData(mLists);
                         } catch (JSONException e) {
                             e.printStackTrace();
-                        }
+                        }*/
                         Log.e(TAG, jsonObject.toString());
                     }
                 },
