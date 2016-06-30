@@ -2,6 +2,7 @@ package com.victor.gankandroid.activity;
 
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +25,10 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class DetailListActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class DetailListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     private static final String TAG = "DetailListActivity";
 
@@ -34,32 +38,22 @@ public class DetailListActivity extends AppCompatActivity {
 
     private DetailListAdapter mAdapter;
 
-    /*@BindView(R.id.rv_detail_list) RecyclerView mRv;
-    @BindView(R.id.sr_layout) SwipeRefreshLayout mSrl;*/
-    private RecyclerView mRv;
-//    private SwipeRefreshLayout mSrl;
+    @BindView(R.id.rv_detail_list) RecyclerView mRv;
+    @BindView(R.id.sr_layout) SwipeRefreshLayout mSrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_list);
-        //ButterKnife.bind(this);
+        ButterKnife.bind(this);
         initData();
     }
 
     private void initData() {
-        mRv = (RecyclerView) findViewById(R.id.rv_detail_list);
-        /*mSrl = (SwipeRefreshLayout) findViewById(R.id.sr_layout);
         mSrl.setColorSchemeColors(R.color.cardview_light_background);
-        mSrl.setOnRefreshListener(this);*/
+        mSrl.setOnRefreshListener(this);
         mAdapter = new DetailListAdapter(this);
         mRv.setLayoutManager(new LinearLayoutManager(this));
-        mRv.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                super.onDraw(c, parent, state);
-            }
-        });
         mRv.setAdapter(mAdapter);
         getAllData();
 
@@ -67,7 +61,7 @@ public class DetailListActivity extends AppCompatActivity {
 
 
     private void getAllData() {
-//        mSrl.setRefreshing(true);
+        mSrl.setRefreshing(true);
         JsonObjectRequest request = new JsonObjectRequest(RequestPath.ANDROID + RequestPath.SPLIT + pageSize + RequestPath.SPLIT + currentPage,
                 null,
                 new Response.Listener<JSONObject>() {
@@ -75,18 +69,12 @@ public class DetailListActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
 
-//                        mSrl.setRefreshing(false);
+                        mSrl.setRefreshing(false);
                         if (null == jsonObject) return;
                         String json2Str = jsonObject.toString();
                         JsonDetailDataList detailDataList = JSON.parseObject(json2Str, JsonDetailDataList.class);
                         mLists = detailDataList.getResults();
                         mAdapter.addMoreData(mLists);
-                        /*try {
-                            mLists = DetailData.initResponse(jsonObject);
-                            mAdapter.addMoreData(mLists);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }*/
                         Log.e(TAG, jsonObject.toString());
                     }
                 },
@@ -94,7 +82,7 @@ public class DetailListActivity extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-//                        mSrl.setRefreshing(false);
+                        mSrl.setRefreshing(false);
                         Toast.makeText(DetailListActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, volleyError.toString());
                     }
@@ -109,4 +97,8 @@ public class DetailListActivity extends AppCompatActivity {
         ApplicationController.getInstance().cancelPendingRequests(TAG);
     }
 
+    @Override
+    public void onRefresh() {
+        getAllData();
+    }
 }
