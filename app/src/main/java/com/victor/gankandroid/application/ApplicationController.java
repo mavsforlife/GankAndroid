@@ -1,32 +1,31 @@
 package com.victor.gankandroid.application;
 
-import android.app.Application;
-import android.text.TextUtils;
+import android.app.Activity;
+import android.content.Context;
+import android.support.multidex.MultiDexApplication;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.Volley;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by victor on 16-5-7.
+ * application
  */
-public class ApplicationController extends Application {
-
-    /**
-    * Log or request TAG
-    */
-    public static final String TAG = "VolleyPatterns";
-
-    /**
-     * * Global request queue for Volley
-     */
-    private RequestQueue mRequestQueue;
+public class ApplicationController extends MultiDexApplication {
 
     /**
      * A singleton instance of the application class for easy access in other places
      */
     private static ApplicationController sInstance;
+    private Set<Activity> allActivities;
+
+    public static int SCREEN_WIDTH = -1;
+    public static int SCREEN_HEIGHT = -1;
+    public static float DIMEN_RATE = -1.0F;
+    public static int DIMEN_DPI = -1;
 
     @Override
     public void onCreate() {
@@ -43,55 +42,44 @@ public class ApplicationController extends Application {
         return sInstance;
     }
 
-    /**
-     * @return The Volley Request queue, the queue will be created if it is null
-     */
-    public RequestQueue getRequestQueue() {
-        // lazy initialize the request queue, the queue instance will be
-        // created when it is accessed for the first time
-        if (mRequestQueue == null) {
-            mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+    public void addActivity(Activity act) {
+        if (allActivities == null) {
+            allActivities = new HashSet<Activity>();
         }
-
-        return mRequestQueue;
+        allActivities.add(act);
     }
 
-    /**
-     * Adds the specified request to the global queue, if tag is specified
-     * then it is used else Default TAG is used.
-     *
-     * @param req
-     * @param tag
-     */
-    public <T> void addToRequestQueue(Request<T> req, String tag) {
-        // set the default tag if tag is empty
-        req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
-        VolleyLog.d("Adding request to queue: %s", req.getUrl());
-
-        getRequestQueue().add(req);
+    public void removeActivity(Activity act) {
+        if (allActivities != null) {
+            allActivities.remove(act);
+        }
     }
 
-    /**
-     * Adds the specified request to the global queue using the Default TAG.
-     *
-     * @param req
-     */
-    public <T> void addToRequestQueue(Request<T> req) {
-        // set the default tag if tag is empty
-        req.setTag(TAG);
-
-        getRequestQueue().add(req);
+    public void exitApp() {
+        if (allActivities != null) {
+            synchronized (allActivities) {
+                for (Activity act : allActivities) {
+                    act.finish();
+                }
+            }
+        }
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
     }
 
-    /**
-     * Cancels all pending requests by the specified TAG, it is important
-     * to specify a TAG so that the pending/ongoing requests can be cancelled.
-     *
-     * @param tag
-     */
-    public void cancelPendingRequests(Object tag) {
-        if (mRequestQueue != null) {
-            mRequestQueue.cancelAll(tag);
+    public void getScreenSize() {
+        WindowManager windowManager = (WindowManager)this.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        Display display = windowManager.getDefaultDisplay();
+        display.getMetrics(dm);
+        DIMEN_RATE = dm.density / 1.0F;
+        DIMEN_DPI = dm.densityDpi;
+        SCREEN_WIDTH = dm.widthPixels;
+        SCREEN_HEIGHT = dm.heightPixels;
+        if(SCREEN_WIDTH > SCREEN_HEIGHT) {
+            int t = SCREEN_HEIGHT;
+            SCREEN_HEIGHT = SCREEN_WIDTH;
+            SCREEN_WIDTH = t;
         }
     }
 }

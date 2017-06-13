@@ -1,15 +1,7 @@
-package com.victor.gankandroid.Model;
+package com.victor.gankandroid.Model.base;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NavigableMap;
 
 /**
  * Created by victor on 16-5-8.
@@ -154,25 +146,4 @@ public class DetailData implements Parcelable {
             return new DetailData[size];
         }
     };
-
-    public static List<DetailData> initResponse(JSONObject jsonObject) throws JSONException {
-
-        JSONArray jsonArray = jsonObject.getJSONArray("results");
-        List<DetailData> detailDatas = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++){
-            JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-            DetailData detailData = new DetailData();
-            detailData.set_id(jsonObject1.getString("_id"));
-            detailData.setCreatedAt(jsonObject1.getString("createdAt"));
-            detailData.setDesc(jsonObject1.getString("desc"));
-            detailData.setPublishedAt(jsonObject1.getString("publishedAt"));
-            detailData.setSource(jsonObject1.getString("source"));
-            detailData.setType(jsonObject1.getString("type"));
-            detailData.setUrl(jsonObject1.getString("url"));
-            detailData.setUsed(jsonObject1.getBoolean("used"));
-            detailData.setWho(jsonObject1.getString("who"));
-            detailDatas.add(detailData);
-        }
-        return detailDatas;
-    }
 }

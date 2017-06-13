@@ -3,23 +3,17 @@ package com.victor.gankandroid.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.victor.gankandroid.Model.base.BaseResult;
+import com.victor.gankandroid.Model.base.DetailData;
+
 import java.util.List;
 
 /**
  * Created by victor on 2016/5/16.
  */
-public class JsonDetailDataList implements Parcelable {
+public class JsonDetailDataList extends BaseResult {
 
-    private boolean error;
     private List<DetailData> results;
-
-    public boolean isError() {
-        return error;
-    }
-
-    public void setError(boolean error) {
-        this.error = error;
-    }
 
     public List<DetailData> getResults() {
         return results;
@@ -37,7 +31,6 @@ public class JsonDetailDataList implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.error ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.results);
     }
 
@@ -45,7 +38,6 @@ public class JsonDetailDataList implements Parcelable {
     }
 
     protected JsonDetailDataList(Parcel in) {
-        this.error = in.readByte() != 0;
         this.results = in.createTypedArrayList(DetailData.CREATOR);
     }
 

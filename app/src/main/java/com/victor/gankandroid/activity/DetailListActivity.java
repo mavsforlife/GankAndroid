@@ -1,39 +1,34 @@
 package com.victor.gankandroid.activity;
 
-import android.graphics.Canvas;
+import android.app.Application;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.victor.gankandroid.Model.DetailData;
 import com.victor.gankandroid.Model.JsonDetailDataList;
+import com.victor.gankandroid.Model.base.DetailData;
 import com.victor.gankandroid.R;
 import com.victor.gankandroid.adapter.DetailListAdapter;
-import com.victor.gankandroid.application.ApplicationController;
-import com.victor.gankandroid.client.RequestPath;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.victor.gankandroid.base.AppClient;
+import com.victor.gankandroid.retrofit.Api;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DetailListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     private static final String TAG = "DetailListActivity";
 
     private int currentPage = 1;
-    private String pageSize = "10";
     private List<DetailData> mLists;
 
     private DetailListAdapter mAdapter;
@@ -50,51 +45,41 @@ public class DetailListActivity extends AppCompatActivity implements SwipeRefres
     }
 
     private void initData() {
-        mSrl.setColorSchemeColors(R.color.cardview_light_background);
+        mSrl.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorPrimary));
         mSrl.setOnRefreshListener(this);
         mAdapter = new DetailListAdapter(this);
         mRv.setLayoutManager(new LinearLayoutManager(this));
         mRv.setAdapter(mAdapter);
         getAllData();
-
     }
 
 
     private void getAllData() {
         mSrl.setRefreshing(true);
-        JsonObjectRequest request = new JsonObjectRequest(RequestPath.ANDROID + RequestPath.SPLIT + pageSize + RequestPath.SPLIT + currentPage,
-                null,
-                new Response.Listener<JSONObject>() {
+        Api api = AppClient.retrofit().create(Api.class);
+        Call<JsonDetailDataList> call = api.androidList(currentPage);
+        call.enqueue(new Callback<JsonDetailDataList>() {
+            @Override
+            public void onResponse(Call<JsonDetailDataList> call, Response<JsonDetailDataList> response) {
 
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
+                mSrl.setRefreshing(false);
+                if (null != response && null != response.body()) {
+                    List<DetailData> list = response.body().getResults();
+                    mAdapter.addMoreData(list);
+                }
+            }
 
-                        mSrl.setRefreshing(false);
-                        if (null == jsonObject) return;
-                        String json2Str = jsonObject.toString();
-                        JsonDetailDataList detailDataList = JSON.parseObject(json2Str, JsonDetailDataList.class);
-                        mLists = detailDataList.getResults();
-                        mAdapter.addMoreData(mLists);
-                        Log.e(TAG, jsonObject.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        mSrl.setRefreshing(false);
-                        Toast.makeText(DetailListActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, volleyError.toString());
-                    }
-                });
-        request.setTag(TAG);
-        ApplicationController.getInstance().addToRequestQueue(request, TAG);
+            @Override
+            public void onFailure(Call<JsonDetailDataList> call, Throwable t) {
+                mSrl.setRefreshing(false);
+                Toast.makeText(DetailListActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ApplicationController.getInstance().cancelPendingRequests(TAG);
     }
 
     @Override
