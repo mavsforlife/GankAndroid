@@ -6,7 +6,7 @@ package com.victor.gankandroid.base;
 
 public class Constants {
 
-    public static final String LOG_TAG = "GankAndroid";
+    public static final String LOG_TAG = "GankLog";
 
     //====================请求url，参数===================================
     public static final String BASE_URL = "http://gank.io/api/data/";
