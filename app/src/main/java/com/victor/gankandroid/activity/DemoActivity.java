@@ -1,7 +1,7 @@
 package com.victor.gankandroid.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.victor.gankandroid.R;
 
@@ -13,3 +13,4 @@ public class DemoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_demo);
     }
 }
+
