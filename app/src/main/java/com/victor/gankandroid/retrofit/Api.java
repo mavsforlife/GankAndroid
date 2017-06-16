@@ -1,11 +1,13 @@
 package com.victor.gankandroid.retrofit;
 
-import com.victor.gankandroid.Model.JsonDetailDataList;
+import com.victor.gankandroid.Model.base.DetailData;
+import com.victor.gankandroid.Model.base.Result;
 import com.victor.gankandroid.base.Constants;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
@@ -16,5 +18,5 @@ public interface Api {
 
     //android列表
     @GET(Constants.ANDROID)
-    Call<JsonDetailDataList> androidList(@Path("page") int page);
+    Call<Result<List<DetailData>>> androidList(@Path("page") int page);
 }

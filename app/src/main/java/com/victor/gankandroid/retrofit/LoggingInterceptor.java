@@ -59,7 +59,6 @@ public class LoggingInterceptor implements Interceptor {
     }
 
     private String unicodeToString(String str) {
-
         Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
         Matcher matcher = pattern.matcher(str);
         char ch;
