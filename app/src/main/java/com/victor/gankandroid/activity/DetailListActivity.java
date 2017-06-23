@@ -24,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DetailListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
+public class DetailListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "DetailListActivity";
 
@@ -33,8 +33,10 @@ public class DetailListActivity extends AppCompatActivity implements SwipeRefres
 
     private DetailListAdapter mAdapter;
 
-    @BindView(R.id.rv_detail_list) RecyclerView mRv;
-    @BindView(R.id.sr_layout) SwipeRefreshLayout mSrl;
+    @BindView(R.id.rv_detail_list)
+    RecyclerView mRv;
+    @BindView(R.id.sr_layout)
+    SwipeRefreshLayout mSrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,6 @@ public class DetailListActivity extends AppCompatActivity implements SwipeRefres
         mList = new ArrayList<>();
         getAllData();
     }
-
 
     private void getAllData() {
         mSrl.setRefreshing(true);
