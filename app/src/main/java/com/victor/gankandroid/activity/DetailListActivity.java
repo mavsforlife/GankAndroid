@@ -47,7 +47,7 @@ public class DetailListActivity extends AppCompatActivity implements SwipeRefres
     }
 
     private void initData() {
-        mSrl.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorPrimary));
+        mSrl.setColorSchemeColors(ContextCompat.getColor(this, android.R.color.black));
         mSrl.setOnRefreshListener(this);
         mAdapter = new DetailListAdapter(this);
         mRv.setLayoutManager(new LinearLayoutManager(this));
