@@ -1,8 +1,24 @@
-<resources>
-
-    <!-- Base application theme. -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="colorPrimary">@android:color/black</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+        <item name="colorAccent">@android:color/black</item>
+
+        <!--<item name="android:actionMenuTextAppearance">@style/MenuTextStyle</item>-->
+        <!--<item name="actionBarSize">@dimen/super_tool_bar_height</item>-->
+        <!--<item name="android:windowBackground">@color/icons</item>-->
+        <!--<item name="actionMenuTextColor">@color/icons</item>-->
+        <!--&lt;!&ndash;checkbox&ndash;&gt;-->
+        <!--<item name="android:textColorSecondary">@color/line</item>-->
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
     </style>
 
-</resources>
+    <style name="custom_toast_anim_view">
+        <item name="@android:windowEnterAnimation">@anim/enter_anim</item>
+        <item name="@android:windowExitAnimation">@anim/exit_anim</item>
+    </style>
+
+</resources >
