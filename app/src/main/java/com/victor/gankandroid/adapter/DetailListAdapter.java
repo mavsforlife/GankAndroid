@@ -13,6 +13,9 @@ import com.victor.gankandroid.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by victor on 16-5-8.
  */
@@ -37,7 +40,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        if (null != mLists){
+        if (null != mLists) {
             holder.mTvAuthor.setText(mLists.get(position).getWho());
             holder.mTvCreateDate.setText(mLists.get(position).getCreatedAt());
             holder.mTvDesc.setText(mLists.get(position).getDesc());
@@ -54,24 +57,24 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
         return mLists;
     }
 
-    public void addMoreData(List<DetailData> list){
+    public void addMoreData(List<DetailData> list) {
         mLists.addAll(list);
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-
+    static class ViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.tv_author)
         TextView mTvAuthor;
+        @BindView(R.id.tv_create_date)
         TextView mTvCreateDate;
+        @BindView(R.id.tv_desc)
         TextView mTvDesc;
+        @BindView(R.id.tv_url)
         TextView mTvUrl;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            mTvAuthor = (TextView) itemView.findViewById(R.id.tv_author);
-            mTvCreateDate = (TextView) itemView.findViewById(R.id.tv_create_date);
-            mTvDesc = (TextView) itemView.findViewById(R.id.tv_desc);
-            mTvUrl = (TextView) itemView.findViewById(R.id.tv_url);
+        public ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
         }
     }
 }
