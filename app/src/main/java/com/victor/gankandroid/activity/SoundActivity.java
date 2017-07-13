@@ -29,12 +29,12 @@ public class SoundActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_toast)
     public void onViewClicked() {
-        SolidToast toast = new SolidToast.Builder()
+        new SolidToast.Builder()
                 .context(this)
                 .animation(R.style.custom_toast_anim_view)
                 .text("test")
                 .duration(Toast.LENGTH_SHORT)
-                .build();
-        toast.show();
+                .build()
+                .show();
     }
 }
