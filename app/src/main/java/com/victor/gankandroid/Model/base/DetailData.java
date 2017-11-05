@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 /**
  * Created by victor on 16-5-8.
+ * 消息内容model
  */
 public class DetailData implements Parcelable {
 
